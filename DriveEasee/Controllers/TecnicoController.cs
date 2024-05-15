@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -47,6 +50,18 @@ namespace DriveEase.Controllers
                 return BadRequest();
             }
 
+            // Verificar se já existe outro técnico com o mesmo e-mail
+            if (_context.Tecnicos.Any(t => t.Email == tecnico.Email && t.IdTecnico != id))
+            {
+                return Conflict("Já existe um técnico com este e-mail.");
+            }
+
+            // Verificar se já existe outro técnico com o mesmo número de telefone
+            if (_context.Tecnicos.Any(t => t.Ntelemovel == tecnico.Ntelemovel && t.IdTecnico != id))
+            {
+                return Conflict("Já existe um técnico com este número de telefone.");
+            }
+
             _context.Entry(tecnico).State = EntityState.Modified;
 
             try
@@ -72,6 +87,18 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Tecnico>> PostTecnico(Tecnico tecnico)
         {
+            // Verificar se já existe outro técnico com o mesmo e-mail
+            if (_context.Tecnicos.Any(t => t.Email == tecnico.Email))
+            {
+                return Conflict("Já existe um técnico com este e-mail.");
+            }
+
+            // Verificar se já existe outro técnico com o mesmo número de telefone
+            if (_context.Tecnicos.Any(t => t.Ntelemovel == tecnico.Ntelemovel))
+            {
+                return Conflict("Já existe um técnico com este número de telefone.");
+            }
+
             _context.Tecnicos.Add(tecnico);
             await _context.SaveChangesAsync();
 

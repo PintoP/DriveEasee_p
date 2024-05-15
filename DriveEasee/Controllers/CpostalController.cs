@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -72,6 +75,12 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Cpostal>> PostCpostal(Cpostal cpostal)
         {
+            // Verificar se já existe outro código postal igual
+            if (_context.Cpostals.Any(c => ((c.Inicio).ToString() + (c.Inicio).ToString()) == ((cpostal.Inicio).ToString()+ (cpostal.Inicio).ToString())))
+            {
+                return Conflict("Já existe um código postal com este valor.");
+            }
+
             _context.Cpostals.Add(cpostal);
             await _context.SaveChangesAsync();
 
@@ -86,6 +95,12 @@ namespace DriveEase.Controllers
             if (cpostal == null)
             {
                 return NotFound();
+            }
+
+            // Verificar se o código postal está associado a um técnico ou cliente
+            if (_context.Tecnicos.Any(t => t.CpostalIdCpostal == id) || _context.Clientes.Any(c => c.CpostalIdCpostal == id))
+            {
+                return Conflict("Não é possível excluir este código postal, pois está associado a um técnico ou cliente.");
             }
 
             _context.Cpostals.Remove(cpostal);

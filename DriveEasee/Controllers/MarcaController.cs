@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -72,6 +75,12 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Marca>> PostMarca(Marca marca)
         {
+            // Verificar se já existe uma marca com o mesmo nome
+            if (_context.Marcas.Any(m => m.Nome == marca.Nome))
+            {
+                return Conflict("Já existe uma marca com este nome.");
+            }
+
             _context.Marcas.Add(marca);
             await _context.SaveChangesAsync();
 
@@ -86,6 +95,12 @@ namespace DriveEase.Controllers
             if (marca == null)
             {
                 return NotFound();
+            }
+
+            // Verificar se a marca está associada a algum modelo
+            if (_context.Modelos.Any(m => m.MarcaId == id))
+            {
+                return Conflict("Não é possível excluir esta marca, pois está associada a algum modelo.");
             }
 
             _context.Marcas.Remove(marca);

@@ -1,8 +1,8 @@
 ﻿using DriveEasee.Models;
+using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,25 +13,25 @@ namespace DriveEase.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        private readonly UserManager<Cliente> _userManager;
+        private readonly DriveEaseContext _context;
 
-        public ClienteController(UserManager<Cliente> userManager)
+        public ClienteController(DriveEaseContext context)
         {
-            _userManager = userManager;
+            _context = context;
         }
 
         // GET: api/Cliente
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
-            return await _userManager.Users.ToListAsync();
+            return await _context.Clientes.ToListAsync();
         }
 
-        // GET: api/Cliente/email
-        [HttpGet("{email}")]
-        public async Task<ActionResult<Cliente>> GetCliente(string email)
+        // GET: api/Cliente/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
-            Cliente cliente = await _userManager.FindByEmailAsync(email);
+            var cliente = await _context.Clientes.FindAsync(id);
 
             if (cliente == null)
             {
@@ -50,54 +50,87 @@ namespace DriveEase.Controllers
                 return BadRequest();
             }
 
-            var existingCliente = await _userManager.FindByIdAsync(id.ToString());
-
-            existingCliente.Nome = cliente.Nome;
-            existingCliente.Email = cliente.Email;
-
-            var result = await _userManager.UpdateAsync(existingCliente);
-
-            if (result.Succeeded)
+            // Verificar se já existe outro cliente com o mesmo email
+            if (_context.Clientes.Any(c => c.Email == cliente.Email && c.IdCliente != id))
             {
-                return NoContent();
+                return Conflict("Já existe um cliente com este email.");
             }
 
-            return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
+            // Verificar se já existe outro cliente com o mesmo número de telefone
+            if (_context.Clientes.Any(c => c.Ntelemovel == cliente.Ntelemovel && c.IdCliente != id))
+            {
+                return Conflict("Já existe um cliente com este número de telefone.");
+            }
+
+            _context.Entry(cliente).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClienteExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // POST: api/Cliente
         [HttpPost]
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
-            var result = await _userManager.CreateAsync(cliente, cliente.Password);
-
-            if (result.Succeeded)
+            // Verificar se já existe outro cliente com o mesmo email
+            if (_context.Clientes.Any(c => c.Email == cliente.Email))
             {
-                return CreatedAtAction(nameof(GetCliente), new { email = cliente.Email }, cliente);
+                return Conflict("Já existe um cliente com este email.");
             }
 
-            return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
+            // Verificar se já existe outro cliente com o mesmo número de telefone
+            if (_context.Clientes.Any(c => c.Ntelemovel == cliente.Ntelemovel))
+            {
+                return Conflict("Já existe um cliente com este número de telefone.");
+            }
+
+            _context.Clientes.Add(cliente);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetCliente", new { id = cliente.IdCliente }, cliente);
         }
 
         // DELETE: api/Cliente/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
-            var cliente = await _userManager.FindByIdAsync(id.ToString());
-
+            var cliente = await _context.Clientes.FindAsync(id);
             if (cliente == null)
             {
                 return NotFound();
             }
 
-            var result = await _userManager.DeleteAsync(cliente);
-
-            if (result.Succeeded)
+            // Verificar se há alugueres associados a este cliente
+            if (_context.Aluguers.Any(a => a.ClienteIdCliente == id))
             {
-                return NoContent();
+                return Conflict("Não é possível excluir este cliente, pois existem alugueres associados a ele.");
             }
 
-            return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
+            _context.Clientes.Remove(cliente);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool ClienteExists(int id)
+        {
+            return _context.Clientes.Any(e => e.IdCliente == id);
         }
     }
 }
+

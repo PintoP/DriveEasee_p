@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -72,6 +75,12 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<EstadoCarro>> PostEstadoCarro(EstadoCarro estadoCarro)
         {
+            // Verificar se já existe um estado de carro com o mesmo nome
+            if (_context.EstadoCarros.Any(e => e.Nome == estadoCarro.Nome))
+            {
+                return Conflict("Já existe um estado de carro com este nome.");
+            }
+
             _context.EstadoCarros.Add(estadoCarro);
             await _context.SaveChangesAsync();
 
@@ -86,6 +95,12 @@ namespace DriveEase.Controllers
             if (estadoCarro == null)
             {
                 return NotFound();
+            }
+
+            // Verificar se o estado de carro está associado a algum carro
+            if (_context.Carros.Any(c => c.EstadoCarroIdEstadoCarro == id))
+            {
+                return Conflict("Não é possível excluir este estado de carro, pois está associado a algum carro.");
             }
 
             _context.EstadoCarros.Remove(estadoCarro);

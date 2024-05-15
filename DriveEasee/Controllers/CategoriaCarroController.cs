@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -86,6 +89,12 @@ namespace DriveEase.Controllers
             if (categoriaCarro == null)
             {
                 return NotFound();
+            }
+
+            // Verificar se há carros associados a esta categoria
+            if (_context.Carros.Any(c => c.CategoriaCarroIdCategoriaCarro == id))
+            {
+                return Conflict("Não é possível excluir esta categoria, pois existem carros associados a ela.");
             }
 
             _context.CategoriaCarros.Remove(categoriaCarro);

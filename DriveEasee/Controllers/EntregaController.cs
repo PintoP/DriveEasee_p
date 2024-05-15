@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -72,6 +75,12 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Entrega>> PostEntrega(Entrega entrega)
         {
+            // Verificar se já existe uma entrega para o aluguer
+            if (_context.Entregas.Any(e => e.AluguerIdAluguer == entrega.AluguerIdAluguer))
+            {
+                return Conflict("Já existe uma entrega para este aluguer.");
+            }
+
             _context.Entregas.Add(entrega);
             await _context.SaveChangesAsync();
 
@@ -88,6 +97,12 @@ namespace DriveEase.Controllers
                 return NotFound();
             }
 
+            // Verificar se o aluguer já tem uma devolução associada a ele
+            if (_context.Devolucaos.Any(d => d.AluguerIdAluguer == entrega.AluguerIdAluguer))
+            {
+                return Conflict("Não é possível excluir esta entrega, pois já existe uma devolução associada ao aluguer.");
+            }
+
             _context.Entregas.Remove(entrega);
             await _context.SaveChangesAsync();
 
@@ -100,3 +115,4 @@ namespace DriveEase.Controllers
         }
     }
 }
+

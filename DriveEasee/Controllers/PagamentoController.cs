@@ -3,6 +3,8 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -72,6 +74,12 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Pagamento>> PostPagamento(Pagamento pagamento)
         {
+            // Verificar se o valor do pagamento é negativo
+            if (pagamento.Valor < 0)
+            {
+                return BadRequest("O valor do pagamento não pode ser negativo.");
+            }
+
             _context.Pagamentos.Add(pagamento);
             await _context.SaveChangesAsync();
 

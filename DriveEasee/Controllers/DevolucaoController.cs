@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -72,6 +75,18 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Devolucao>> PostDevolucao(Devolucao devolucao)
         {
+            // Verificar se já existe uma devolução para o aluguer
+            if (_context.Devolucaos.Any(d => d.AluguerIdAluguer == devolucao.AluguerIdAluguer))
+            {
+                return Conflict("Já existe uma devolução para este aluguer.");
+            }
+
+            // Verificar se existe uma entrega associada ao aluguer
+            if (!_context.Entregas.Any(e => e.AluguerIdAluguer == devolucao.AluguerIdAluguer))
+            {
+                return Conflict("Não é possível criar uma devolução sem uma entrega associada ao aluguer.");
+            }
+
             _context.Devolucaos.Add(devolucao);
             await _context.SaveChangesAsync();
 

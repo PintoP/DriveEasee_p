@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -47,6 +50,12 @@ namespace DriveEase.Controllers
                 return BadRequest();
             }
 
+            // Verificar se já existe outro carro com a mesma matrícula, excluindo o carro atual
+            if (_context.Carros.Any(c => c.Matricula == carro.Matricula && c.IdCarro != id))
+            {
+                return Conflict("Já existe um carro com esta matrícula.");
+            }
+
             _context.Entry(carro).State = EntityState.Modified;
 
             try
@@ -72,6 +81,12 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Carro>> PostCarro(Carro carro)
         {
+            // Verificar se já existe outro carro com a mesma matrícula
+            if (_context.Carros.Any(c => c.Matricula == carro.Matricula))
+            {
+                return Conflict("Já existe um carro com esta matrícula.");
+            }
+
             _context.Carros.Add(carro);
             await _context.SaveChangesAsync();
 
@@ -88,6 +103,12 @@ namespace DriveEase.Controllers
                 return NotFound();
             }
 
+            // Verificar se há alugueres associados a este carro
+            if (_context.Aluguers.Any(a => a.CarroIdCarro == id))
+            {
+                return Conflict("Não é possível excluir este carro, pois existem alugueres associados a ele.");
+            }
+
             _context.Carros.Remove(carro);
             await _context.SaveChangesAsync();
 
@@ -100,3 +121,4 @@ namespace DriveEase.Controllers
         }
     }
 }
+

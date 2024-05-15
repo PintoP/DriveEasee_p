@@ -3,6 +3,9 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -72,6 +75,12 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Modelo>> PostModelo(Modelo modelo)
         {
+            // Verificar se já existe um modelo com o mesmo nome
+            if (_context.Modelos.Any(m => m.NomeModelo == modelo.NomeModelo))
+            {
+                return Conflict("Já existe um modelo com este nome.");
+            }
+
             _context.Modelos.Add(modelo);
             await _context.SaveChangesAsync();
 
@@ -86,6 +95,12 @@ namespace DriveEase.Controllers
             if (modelo == null)
             {
                 return NotFound();
+            }
+
+            // Verificar se o modelo está associado a algum carro ou categoria
+            if (_context.Carros.Any(c => c.ModeloIdModelo == id) || _context.CategoriaCarros.Any(cc => cc.ModeloIdModelo == id))
+            {
+                return Conflict("Não é possível excluir este modelo, pois está associado a algum carro e/ou categoria.");
             }
 
             _context.Modelos.Remove(modelo);
