@@ -76,7 +76,7 @@ namespace DriveEase.Controllers
         public async Task<ActionResult<Marca>> PostMarca(Marca marca)
         {
             // Verificar se já existe uma marca com o mesmo nome
-            if (_context.Marcas.Any(m => m.Nome == marca.Nome))
+            if (_context.Marcas.Any(m => m.NomeMarca == marca.NomeMarca))
             {
                 return Conflict("Já existe uma marca com este nome.");
             }
@@ -98,7 +98,7 @@ namespace DriveEase.Controllers
             }
 
             // Verificar se a marca está associada a algum modelo
-            if (_context.Modelos.Any(m => m.MarcaId == id))
+            if (_context.Modelos.Any(m => m.MarcaIdMarca == id))
             {
                 return Conflict("Não é possível excluir esta marca, pois está associada a algum modelo.");
             }

@@ -5,6 +5,7 @@ namespace DriveEasee.Models
 {
     public partial class Cpostal
     {
+
         public Cpostal()
         {
         }
@@ -13,5 +14,8 @@ namespace DriveEasee.Models
         public int? Inicio { get; set; }
         public int? Fim { get; set; }
         public string? Localizacao { get; set; }
+
+
+
     }
 }
