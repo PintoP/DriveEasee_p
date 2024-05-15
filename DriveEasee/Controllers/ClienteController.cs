@@ -1,8 +1,11 @@
 ﻿using DriveEasee.Models;
-using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
@@ -10,25 +13,25 @@ namespace DriveEase.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        private readonly DriveEaseContext _context;
+        private readonly UserManager<Cliente> _userManager;
 
-        public ClienteController(DriveEaseContext context)
+        public ClienteController(UserManager<Cliente> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/Cliente
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
-            return await _context.Clientes.ToListAsync();
+            return await _userManager.Users.ToListAsync();
         }
 
-        // GET: api/Cliente/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Cliente>> GetCliente(int id)
+        // GET: api/Cliente/email
+        [HttpGet("{email}")]
+        public async Task<ActionResult<Cliente>> GetCliente(string email)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
+            Cliente cliente = await _userManager.FindByEmailAsync(email);
 
             if (cliente == null)
             {
@@ -47,56 +50,54 @@ namespace DriveEase.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(cliente).State = EntityState.Modified;
+            var existingCliente = await _userManager.FindByIdAsync(id.ToString());
 
-            try
+            existingCliente.Nome = cliente.Nome;
+            existingCliente.Email = cliente.Email;
+
+            var result = await _userManager.UpdateAsync(existingCliente);
+
+            if (result.Succeeded)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClienteExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NoContent();
             }
 
-            return NoContent();
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
         }
 
         // POST: api/Cliente
         [HttpPost]
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
-            _context.Clientes.Add(cliente);
-            await _context.SaveChangesAsync();
+            var result = await _userManager.CreateAsync(cliente, cliente.Password);
 
-            return CreatedAtAction("GetCliente", new { id = cliente.IdCliente }, cliente);
+            if (result.Succeeded)
+            {
+                return CreatedAtAction(nameof(GetCliente), new { email = cliente.Email }, cliente);
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
         }
 
         // DELETE: api/Cliente/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente = await _userManager.FindByIdAsync(id.ToString());
+
             if (cliente == null)
             {
                 return NotFound();
             }
 
-            _context.Clientes.Remove(cliente);
-            await _context.SaveChangesAsync();
+            var result = await _userManager.DeleteAsync(cliente);
 
-            return NoContent();
-        }
+            if (result.Succeeded)
+            {
+                return NoContent();
+            }
 
-        private bool ClienteExists(int id)
-        {
-            return _context.Clientes.Any(e => e.IdCliente == id);
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
         }
     }
 }

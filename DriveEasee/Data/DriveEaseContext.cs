@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using DriveEasee.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DriveEasee.Data
 {
-    public partial class DriveEaseContext : DbContext
+    public partial class DriveEaseContext : IdentityUserContext<IdentityUser>
     {
         public DriveEaseContext()
         {
@@ -18,7 +21,7 @@ namespace DriveEasee.Data
 
         public virtual DbSet<Aluguer> Aluguers { get; set; } = null!;
         public virtual DbSet<Carro> Carros { get; set; } = null!;
-        public virtual DbSet<CategoriaCarro> CategoriaCarros { get; set; } = null!;
+        public virtual DbSet<CategoriaCarro> CategoriaCarros { get; set; } = null!; 
         public virtual DbSet<Caucao> Caucaos { get; set; } = null!;
         public virtual DbSet<Cliente> Clientes { get; set; } = null!;
         public virtual DbSet<Cpostal> Cpostals { get; set; } = null!;
@@ -46,6 +49,8 @@ namespace DriveEasee.Data
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Aluguer>(entity =>
             {
                 entity.HasKey(e => e.IdAluguer)
