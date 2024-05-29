@@ -10,22 +10,23 @@ using DriveEasee.Services;
 
 namespace DriveEasee
 {
-    public class Program
+    public partial class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Adicione servi�os ao cont�iner.
+            // Adicione serviços ao contêiner.
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<JwtService>();
-            // Configura��o do DbContext
+
+            // Configuração do DbContext
             builder.Services.AddDbContext<DriveEaseContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Configura��o do servi�o Identity
+            // Configuração do serviço Identity
             builder.Services.AddIdentityCore<IdentityUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
@@ -37,7 +38,7 @@ namespace DriveEasee
                 options.Password.RequireLowercase = true;
             }).AddEntityFrameworkStores<DriveEaseContext>();
 
-            // Configura��o da autentica��o JWT
+            // Configuração da autenticação JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -53,67 +54,42 @@ namespace DriveEasee
                     };
                 });
 
+            // Configuração do CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader());
+            });
+
             var app = builder.Build();
 
-            // Configure o pipeline de solicita��o HTTP.
+            // Configure o pipeline de solicitação HTTP.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API v1");
+                });
+
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
-
-            // Adicionando autentica��o JWT ao pipeline de solicita��o HTTP
+            app.UseStaticFiles(); // Para servir arquivos Blazor
+            app.UseRouting();
+            app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
+            app.MapFallbackToFile("index.html"); // Para servir arquivos Blazor
 
             app.Run();
         }
+    }
 
-    };
-};
-
-builder.Services.AddControllers();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
-});
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API v1");
-    });
+    public partial class Program { }
 }
-// Configura o pipeline de requisi��es HTTP.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-// Add authentication and authorization
-app.UseHttpsRedirection();
-app.UseStaticFiles(); // To serve Blazor files
-app.UseRouting();
-app.UseCors("AllowAllOrigins");
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-app.MapFallbackToFile("index.html"); // To serve Blazor files
-
-app.Run();
-
-public partial class Program { }
-
-    
-
