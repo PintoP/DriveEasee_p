@@ -53,6 +53,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,11 +72,22 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API v1");
     });
 }
-
+// Configura o pipeline de requisições HTTP.
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 // Add authentication and authorization
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // To serve Blazor files
+app.UseRouting();
+app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+app.MapFallbackToFile("index.html"); // To serve Blazor files
+
 app.Run();
+
 public partial class Program { }

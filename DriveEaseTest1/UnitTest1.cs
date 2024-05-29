@@ -16,11 +16,12 @@ namespace DriveEaseTest
 
             var HttpClient = webAppFactory.CreateDefaultClient();
 
-            var response = await HttpClient.GetAsync("DriveEasee/Controllers");
+            var response = await HttpClient.GetAsync("/api/Cliente");
             List<Cliente> clientes = await response.Content.ReadFromJsonAsync<List<Cliente>>();
 
             Assert.IsTrue(clientes.Exists(c => c.Nome.Contains("Nuno")));
 
         }
+       
     }
 }
