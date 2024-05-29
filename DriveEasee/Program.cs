@@ -1,57 +1,80 @@
-using DriveEasee.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+global using DriveEasee.Models;
+global using DriveEasee.Data;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DriveEasee.Services;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllers();
-
-// Add DbContext and Identity services
-builder.Services.AddDbContext<DriveEaseContext>();
-builder.Services.AddIdentityCore<IdentityUser>(options =>
+namespace DriveEasee
 {
-    options.SignIn.RequireConfirmedAccount = false;
-    options.User.RequireUniqueEmail = true;
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireLowercase = true;
-}).AddEntityFrameworkStores<DriveEaseContext>();
-
-// Add Swagger services
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Your API", Version = "v1" });
-
-    // Configure JWT authentication scheme
-    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    public class Program
     {
-        Description = "JWT Authorization header using the Bearer scheme",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-        Scheme = "bearer"
-    });
-
-    // Add JWT security requirement for Swagger UI operations
-    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
+        public static void Main(string[] args)
         {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Adicione serviï¿½os ao contï¿½iner.
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<JwtService>();
+            // Configuraï¿½ï¿½o do DbContext
+            builder.Services.AddDbContext<DriveEaseContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Configuraï¿½ï¿½o do serviï¿½o Identity
+            builder.Services.AddIdentityCore<IdentityUser>(options =>
             {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                options.SignIn.RequireConfirmedAccount = false;
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+            }).AddEntityFrameworkStores<DriveEaseContext>();
+
+            // Configuraï¿½ï¿½o da autenticaï¿½ï¿½o JWT
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    };
+                });
+
+            var app = builder.Build();
+
+            // Configure o pipeline de solicitaï¿½ï¿½o HTTP.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            // Adicionando autenticaï¿½ï¿½o JWT ao pipeline de solicitaï¿½ï¿½o HTTP
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
         }
-    });
-});
+
+    };
+};
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -72,7 +95,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API v1");
     });
 }
-// Configura o pipeline de requisições HTTP.
+// Configura o pipeline de requisiï¿½ï¿½es HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -91,3 +114,6 @@ app.MapFallbackToFile("index.html"); // To serve Blazor files
 app.Run();
 
 public partial class Program { }
+
+    
+

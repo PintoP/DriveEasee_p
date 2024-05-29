@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using DriveEasee.Services;
 
 namespace DriveEase.Controllers
 {
@@ -14,10 +16,14 @@ namespace DriveEase.Controllers
     public class TecnicoController : ControllerBase
     {
         private readonly DriveEaseContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly JwtService _jwtService;
 
-        public TecnicoController(DriveEaseContext context)
+        public TecnicoController(DriveEaseContext context, UserManager<IdentityUser> userManager, JwtService jwtService)
         {
             _context = context;
+            _userManager = userManager;
+            _jwtService = jwtService;
         }
 
         // GET: api/Tecnico
@@ -50,13 +56,11 @@ namespace DriveEase.Controllers
                 return BadRequest();
             }
 
-            // Verificar se já existe outro técnico com o mesmo e-mail
             if (_context.Tecnicos.Any(t => t.Email == tecnico.Email && t.IdTecnico != id))
             {
                 return Conflict("Já existe um técnico com este e-mail.");
             }
 
-            // Verificar se já existe outro técnico com o mesmo número de telefone
             if (_context.Tecnicos.Any(t => t.Ntelemovel == tecnico.Ntelemovel && t.IdTecnico != id))
             {
                 return Conflict("Já existe um técnico com este número de telefone.");
@@ -87,13 +91,11 @@ namespace DriveEase.Controllers
         [HttpPost]
         public async Task<ActionResult<Tecnico>> PostTecnico(Tecnico tecnico)
         {
-            // Verificar se já existe outro técnico com o mesmo e-mail
             if (_context.Tecnicos.Any(t => t.Email == tecnico.Email))
             {
                 return Conflict("Já existe um técnico com este e-mail.");
             }
 
-            // Verificar se já existe outro técnico com o mesmo número de telefone
             if (_context.Tecnicos.Any(t => t.Ntelemovel == tecnico.Ntelemovel))
             {
                 return Conflict("Já existe um técnico com este número de telefone.");
@@ -124,6 +126,34 @@ namespace DriveEase.Controllers
         private bool TecnicoExists(int id)
         {
             return _context.Tecnicos.Any(e => e.IdTecnico == id);
+        }
+
+        // POST: api/Tecnico/BearerToken
+        [HttpPost("BearerToken")]
+        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Credenciais inválidas");
+            }
+
+            var user = await _userManager.FindByNameAsync(request.UserName);
+
+            if (user == null)
+            {
+                return BadRequest("Credenciais inválidas");
+            }
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+
+            if (!isPasswordValid)
+            {
+                return BadRequest("Credenciais inválidas");
+            }
+
+            var token = _jwtService.CreateToken(user);
+
+            return Ok(token);
         }
     }
 }
