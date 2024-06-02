@@ -3,6 +3,7 @@ using DriveEasee.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Permissions;
 
 namespace DriveEase.Controllers
 {
@@ -113,6 +114,9 @@ namespace DriveEase.Controllers
             {
                 return _context.Aluguers.Any(e => e.IdAluguer == id);
             }
-        }
+
+        //Envia confirmação da eserve (email)
+        
     }
+}
 

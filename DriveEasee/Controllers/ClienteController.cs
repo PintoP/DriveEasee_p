@@ -172,5 +172,10 @@ namespace DriveEase.Controllers
 
             return Ok(token);
         }
+
+
+        //introduz datas
+        //confirma pagamento
+        
     }
 }

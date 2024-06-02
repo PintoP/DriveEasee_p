@@ -98,5 +98,9 @@ namespace DriveEase.Controllers
         {
             return _context.Reviews.Any(e => e.IdReview == id);
         }
+
+        //envia convite para preeencher o inquerito
+        //envia email de agradecimento
+
     }
 }

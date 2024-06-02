@@ -155,5 +155,8 @@ namespace DriveEase.Controllers
 
             return Ok(token);
         }
+
+        //recebe caução
+        //verifica estado do carro
     }
 }

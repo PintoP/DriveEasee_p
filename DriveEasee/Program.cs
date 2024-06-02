@@ -21,6 +21,7 @@ namespace DriveEasee
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<JwtService>();
+
             // Configuração do DbContext
             builder.Services.AddDbContext<DriveEaseContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -53,6 +54,18 @@ namespace DriveEasee
                     };
                 });
 
+            // Configuração do CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
+
             var app = builder.Build();
 
             // Configure o pipeline de solicitação HTTP.
@@ -66,6 +79,10 @@ namespace DriveEasee
 
             // Adicionando autenticação JWT ao pipeline de solicitação HTTP
             app.UseAuthentication();
+
+            // Adicionando CORS ao pipeline de solicitação HTTP
+            app.UseCors("AllowAllOrigins");
+
             app.UseAuthorization();
 
             app.MapControllers();

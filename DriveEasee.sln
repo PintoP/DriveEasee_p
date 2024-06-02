@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveEasee", "DriveEasee\DriveEasee.csproj", "{C2CD83FB-553A-4AB9-A222-517B02DB1CA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DriveEasee", "DriveEasee\DriveEasee.csproj", "{C2CD83FB-553A-4AB9-A222-517B02DB1CA5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DriveEaseTest", "DriveEaseTest\DriveEaseTest.csproj", "{B0E9486E-1229-4C02-8F9B-BEE14891AEB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Front_end.Server", "Front_end\Server\Front_end.Server.csproj", "{E31F60CB-C39F-4207-B276-11F6D1AB5A58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Front_end.Client", "Front_end\Client\Front_end.Client.csproj", "{FECE3962-5F59-4C3D-9334-3A2B67971078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Front_end.Shared", "Front_end\Shared\Front_end.Shared.csproj", "{BF3D8A6C-E163-42CB-A9A3-1503DED498FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{C2CD83FB-553A-4AB9-A222-517B02DB1CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2CD83FB-553A-4AB9-A222-517B02DB1CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2CD83FB-553A-4AB9-A222-517B02DB1CA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0E9486E-1229-4C02-8F9B-BEE14891AEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0E9486E-1229-4C02-8F9B-BEE14891AEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0E9486E-1229-4C02-8F9B-BEE14891AEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0E9486E-1229-4C02-8F9B-BEE14891AEB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31F60CB-C39F-4207-B276-11F6D1AB5A58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31F60CB-C39F-4207-B276-11F6D1AB5A58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31F60CB-C39F-4207-B276-11F6D1AB5A58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31F60CB-C39F-4207-B276-11F6D1AB5A58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FECE3962-5F59-4C3D-9334-3A2B67971078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FECE3962-5F59-4C3D-9334-3A2B67971078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FECE3962-5F59-4C3D-9334-3A2B67971078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FECE3962-5F59-4C3D-9334-3A2B67971078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF3D8A6C-E163-42CB-A9A3-1503DED498FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF3D8A6C-E163-42CB-A9A3-1503DED498FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF3D8A6C-E163-42CB-A9A3-1503DED498FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF3D8A6C-E163-42CB-A9A3-1503DED498FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

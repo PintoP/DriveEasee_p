@@ -106,5 +106,6 @@ namespace DriveEase.Controllers
         {
             return _context.Pagamentos.Any(e => e.IdPagamento == id);
         }
+
     }
 }
