@@ -1,0 +1,99 @@
+﻿@page "/veiculos"
+@inject HttpClient Http
+@using DriveEase.Shared.Models
+<body>
+    <header>
+        <nav>
+            <ul>
+                <div class="left-menu">
+                <li><a href="inicial"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="veiculos" class="active"><i class="fas fa-car"></i> Veículos</a></li>
+                <li><a href="parceiros"><i class="fas fa-handshake"></i> Parceiros</a></li>
+                <li><a href="assistencia"><i class="fas fa-life-ring"></i> Assistência</a></li>
+                <li><a href="gfeedbacks"><i class="fas fa-comments"></i> Feedbacks</a></li>
+                </div>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="vehicle-management">
+            <h2>Veículos</h2>
+            <div class="search-bar">
+                <input type="text" placeholder="Pesquisar por nome ou matrícula" @bind="searchTerm">
+                <button @onclick="SearchVehicles"><img src="images/search-icon.png" alt="Procurar"></button>
+            </div>
+            <div id="veiculos-list" class="vehicle-list">
+                @if (veiculos == null)
+                {
+                    <p><em>Carregando...</em></p>
+                }
+                else
+                {
+                    @foreach (var vehicle in veiculos)
+                    {
+                        <div class="vehicle-item">
+                            <img src="@vehicle.Image" alt="@vehicle.Name">
+                            <div class="vehicle-details">
+                                <p class="vehicle-name"><strong>Nome:</strong> @vehicle.Name</p>
+                                <p class="vehicle-model"><strong>Modelo:</strong> @vehicle.Model</p>
+                                <p class="vehicle-year"><strong>Ano:</strong> @vehicle.Year</p>
+                                <p class="vehicle-price"><strong>Preço:</strong> @vehicle.Price</p>
+                            </div>
+                            <a href="descricao_carro" class="view-vehicle">Ver Veículo</a>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="pagination">
+                <button class="pagination-button" @onclick="PreviousPage" disabled="@isFirstPage">Anterior</button>
+                <button class="pagination-button active">1</button>
+                <button class="pagination-button" @onclick="NextPage">Próximo</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="contact-info">
+            <span><i class="fas fa-phone"></i> +351 252 300 500</span><br>
+            <span><i class="fas fa-envelope"></i> contato@driveease.com</span>
+        </div>
+        <p>&copy; 2024 DriveEase. Todos os direitos reservados.</p>
+    </footer>
+</body>
+
+@code {
+    private List<Vehicle> veiculos;
+    private string searchTerm = "";
+    private bool isFirstPage = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVehicles();
+    }
+
+    private async Task LoadVehicles()
+    {
+       veiculos = await Http.GetFromJsonAsync<List<Vehicle>>("api/Carro");
+    }
+
+    private async Task SearchVehicles()
+    {
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            veiculos = await Http.GetFromJsonAsync<List<Vehicle>>($"api/Carro/search?query={searchTerm}");
+        }
+        else
+        {
+            await LoadVehicles();
+        }
+    }
+
+    private void PreviousPage()
+    {
+        // Implementar lógica de paginação anterior
+    }
+
+    private void NextPage()
+    {
+        // Implementar lógica de próxima página
+    }
+}

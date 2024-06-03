@@ -1,0 +1,23 @@
+﻿@* Shared/Header.razor *@
+@code {
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("Header component initialized");
+    }
+}
+<Header>
+    <nav>
+        <ul>
+            <div class="left-menu">
+            <li><a href="inicial.html" class="active"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="index.razor"><i class="fas fa-car"></i> Veículos</a></li>
+            <li><a href="parceiros.html"><i class="fas fa-handshake"></i> Parceiros</a></li>
+            <li><a href="assistencia.html"><i class="fas fa-life-ring"></i> Assistência</a></li>
+            <li><a href="gfeedbacks.html"><i class="fas fa-comments"></i> Feedbacks</a></li>
+            </div>
+            <div class="right-menu">
+            <li class="account"><a href="#" id="loginBtn"><i class="fas fa-user"></i> Login/Registo</a></li>
+            </div>
+        </ul>
+    </nav>
+</Header>

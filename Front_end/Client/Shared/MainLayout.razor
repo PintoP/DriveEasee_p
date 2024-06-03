@@ -1,17 +1,50 @@
 ﻿@inherits LayoutComponentBase
 
+<PageTitle>Front-end</PageTitle>
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+        <!-- Código do Header inserido diretamente aqui -->
+        <nav>
+            <ul>
+                <div class="left-menu">
+                    <li><a href="inicial.html" class="active"><i class="fas fa-home"></i> Início</a></li>
+                    <li><a href="index.razor"><i class="fas fa-car"></i> Veículos</a></li>
+                    <li><a href="parceiros.html"><i class="fas fa-handshake"></i> Parceiros</a></li>
+                    <li><a href="assistencia.html"><i class="fas fa-life-ring"></i> Assistência</a></li>
+                    <li><a href="gfeedbacks.html"><i class="fas fa-comments"></i> Feedbacks</a></li>
+                </div>
+                <div class="right-menu">
+                    <li class="account"><a href="#" id="loginBtn"><i class="fas fa-user"></i> Login/Registo</a></li>
+                </div>
+            </ul>
+        </nav>
 
         <article class="content px-4">
             @Body
         </article>
     </main>
+</div>
+
+<!-- Código do modal de login inserido diretamente aqui -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+        <span class="close" id="closeLoginModal">&times;</span>
+        <h2>Login/Registo</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="modal-button">Entrar</button>
+        </form>
+    </div>
 </div>

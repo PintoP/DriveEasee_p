@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System.Net.Http;
 using MyBlazorApp.Client.Services;
 
+
 namespace Front_end.Client
 {
     public class Program
