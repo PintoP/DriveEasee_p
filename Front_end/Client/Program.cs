@@ -12,7 +12,7 @@ namespace Front_end.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
+            builder.RootComponents.Add<App>("app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             // Configurar HttpClient para a API
