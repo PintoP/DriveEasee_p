@@ -54,16 +54,14 @@ namespace DriveEasee
                     };
                 });
 
-            // Configuração do CORS
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllOrigins",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
-                    });
+                options.AddPolicy("MyPolicy", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7159") // Substitua pela URL de origem do seu Blazor App
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
             });
 
             var app = builder.Build();

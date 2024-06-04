@@ -6,18 +6,40 @@ using Front_end.Shared;
 
 namespace MyBlazorApp.Client.Services
 {
-    public class DataService
+    public class ApiService
     {
         private readonly HttpClient _httpClient;
 
-        public DataService(HttpClient httpClient)
+        public ApiService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<WeatherForecast>> GetWeatherForecastAsync()
+        public async Task<T> GetAsync<T>(string endpoint)
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<WeatherForecast>>("WeatherForecast");
+            var response = await _httpClient.GetAsync(endpoint);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<T>();
+        }
+
+        public async Task<T> PostAsync<T>(string endpoint, object content)
+        {
+            var response = await _httpClient.PostAsJsonAsync(endpoint, content);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<T>();
+        }
+
+        public async Task<T> PutAsync<T>(string endpoint, object content)
+        {
+            var response = await _httpClient.PutAsJsonAsync(endpoint, content);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<T>();
+        }
+
+        public async Task DeleteAsync(string endpoint)
+        {
+            var response = await _httpClient.DeleteAsync(endpoint);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

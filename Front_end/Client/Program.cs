@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System.Net.Http;
 using MyBlazorApp.Client.Services;
 
-
 namespace Front_end.Client
 {
     public class Program
@@ -20,9 +19,10 @@ namespace Front_end.Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             // Registrar DataService
-            builder.Services.AddScoped<DataService>();
+            builder.Services.AddScoped<ApiService>();
 
             await builder.Build().RunAsync();
+
         }
     }
 }
