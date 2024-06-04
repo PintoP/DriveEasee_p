@@ -15,9 +15,9 @@ namespace MyBlazorApp.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<WeatherForecast>> GetWeatherForecastAsync()
+        public async Task<IEnumerable<CarroViewModel>> GetWeatherForecastAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<WeatherForecast>>("WeatherForecast");
+            return await _httpClient.GetFromJsonAsync<IEnumerable<CarroViewModel>>("WeatherForecast");
         }
     }
 }

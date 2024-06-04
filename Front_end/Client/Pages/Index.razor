@@ -1,2 +1,126 @@
 ﻿@page "/"
-<h1>ta a funcionar</h1>
+@using Front_end.Client.Shared
+<HeadContent>
+    
+</HeadContent>
+<body>
+  <main>
+
+        <header>
+            <nav>
+                <ul>
+                    <div class="left-menu">
+                    <li><a href="inicial"><i class="fas fa-home"></i> Início</a></li>
+                    <li><a href="/veiculos" class="active"><i class="fas fa-car"></i> Veículos</a></li>
+                    <li><a href="parceiros"><i class="fas fa-handshake"></i> Parceiros</a></li>
+                    <li><a href="assistencia"><i class="fas fa-life-ring"></i> Assistência</a></li>
+                    <li><a href="gfeedbacks"><i class="fas fa-comments"></i> Feedbacks</a></li>
+                    </div>
+                </ul>
+            </nav>
+        </header>
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1 class="company-name">DriveEase</h1>
+        <h2>O Melhor Aluguer de Carros em Todo o Mundo</h2>
+        <p>Os membros recebem descontos exclusivos de até 15%! Registe-se/Faça login <a id="heroLoginLink">aqui</a></p>
+        <button id="saibaMaisBtn">Saiba Mais</button>
+      </div>
+      <div class="search-form">
+        <form id="searchForm">
+          <div class="form-group">
+            <label for="pais">País</label>
+            <select id="pais" required>
+              <option value="">Selecione o País</option>
+              <option value="portugal">Portugal</option>
+              <option value="espanha">Espanha</option>
+              <option value="franca">França</option>
+              <!-- Adicione mais opções conforme necessário -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cidade">Cidade</label>
+            <select id="cidade" required>
+              <option value="">Selecione a Cidade</option>
+              <!-- As opções serão adicionadas dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="data-inicio">Data de Início</label>
+            <input type="date" id="data-inicio" required>
+          </div>
+          <div class="form-group">
+            <label for="data-fim">Data de Fim</label>
+            <input type="date" id="data-fim" required>
+          </div>
+          <button type="submit" id="searchButton">Pesquisar</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Seção de Feedbacks -->
+    <section class="feedbacks">
+      <h2>O que nossos clientes dizem</h2>
+      <div class="feedback">
+        <p>"Serviço excelente e carros em ótimas condições!"</p>
+        <p>- João Silva</p>
+      </div>
+      <div class="feedback">
+        <p>"Muito fácil de reservar e atendimento ótimo!"</p>
+        <p>- Maria Fernandes</p>
+      </div>
+      <div class="feedback">
+        <p>"Os melhores preços e grande variedade de veículos."</p>
+        <p>- Carlos Souza</p>
+      </div>
+      <div class="feedback">
+        <p>"Excelente experiência do início ao fim."</p>
+        <p>- Ana Pereira</p>
+      </div>
+      <div class="feedback">
+        <p>"Experiência incrível! Recomendo."</p>
+        <p>- Tiago Saramago</p>
+      </div>
+    </section>
+
+    <!-- Seção de sobreposição escura -->
+    <section class="overlay-section"></section>
+  </main>
+
+  <footer>
+    <div class="contact-info">
+      <span><i class="fas fa-phone"></i> +351 252 300 500</span><br>
+      <span><i class="fas fa-envelope"></i> contato@driveease.com</span>
+    </div>
+    <p>&copy; 2024 DriveEase. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Modal Login/Registo -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+      <span class="close" id="closeLoginModal">&times;</span>
+      <h2>Login/Registo</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Usuário</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="modal-button">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mensagem Sobreposta -->
+  <div class="message-overlay" id="messageOverlay">
+    <div class="message">
+      <span class="close" id="closeMessage">&times;</span>
+      <h2>Bem-vindo ao DriveEase!</h2>
+      <p>Novos usuários têm 15% de desconto na sua primeira reserva. Aproveite nossa frota de veículos modernos e bem mantidos para uma experiência de condução incrível. Não perca esta oportunidade exclusiva!</p>
+    </div>
+  </div>
+</body>

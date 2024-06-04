@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Front_end.Shared.CarroViewModel>
+
+@{
+    ViewData["Title"] = "Carro";
+}
+
+<h1>Carro</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCarro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Matricula)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tara)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lotacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoCarroIdEstadoCarro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoriaCarroIdCategoriaCarro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModeloIdModelo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCarro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Matricula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tara)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lotacao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoCarroIdEstadoCarro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoriaCarroIdCategoriaCarro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModeloIdModelo)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
