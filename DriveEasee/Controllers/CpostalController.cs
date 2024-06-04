@@ -12,7 +12,6 @@ namespace DriveEase.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("AllowAll")]
     public class CpostalController : ControllerBase
     {
         private readonly DriveEaseContext _context;

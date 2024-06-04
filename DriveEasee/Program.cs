@@ -57,7 +57,7 @@ namespace DriveEasee
             // Configuração do CORS
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllOrigins",
+                options.AddPolicy("AllowAnyOrigin",
                     builder =>
                     {
                         builder.AllowAnyOrigin()
@@ -81,7 +81,7 @@ namespace DriveEasee
             app.UseAuthentication();
 
             // Adicionando CORS ao pipeline de solicitação HTTP
-            app.UseCors("AllowAllOrigins");
+            app.UseCors("AllowAnyOrigin");
 
             app.UseAuthorization();
 

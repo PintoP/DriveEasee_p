@@ -1,49 +1,56 @@
 import "./style.css";
-import { BACKEND_URL } from "../../Config"
+import { BACKEND_URL } from "../../Config";
 import axios from 'axios';
+import React, { useState } from "react";
+
+function cpostalhandler(cpostals) {
+    if (!Array.isArray(cpostals)) {
+        return cpostals;
+    }
+    return cpostals.map((cpostal, index) => (
+        <div key={index}>{cpostal.inicio}</div>
+    ));
+}
 
 export function Veiculos() {
+    const [codigopostal, setcodigopostal] = useState("Nada a mostrar");
 
-    axios.get(BACKEND_URL + "/Cpostal")
-        .then(function (response) {
-            console.log("Response: " + response);
-     })
-        .catch(function (error) {
-            console.log("Error: " + error);
-     })
-     .finally(function(){
-         console.log("Finaly.");
-     })
+        axios.get(BACKEND_URL + "/Cpostal")
+            .then(function (response) {
+                setcodigopostal(cpostalhandler(response.data));
+            })
+            .catch(function (error) {
+                console.log("Error: " + error);
+            })
+            .finally(function () {
+                console.log("Finally.");
+            });
 
     return (
         <div className="veiculos">
-
-            <section class="vehicle-management">
+            <section className="vehicle-management">
                 <h2>Veículos</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Pesquisar por nome ou matrícula"/>
-                        <button type="submit"></button>
+                <div className="search-bar">
+                    <input type="text" placeholder="Pesquisar por nome ou matrícula" />
+                    <button type="submit"></button>
                 </div>
-                <div class="vehicle-list">
-                    <div class="vehicle-item">
-
-                        <div class="vehicle-details">
-                            <p class="vehicle-name">Nome</p>
-                            <p class="vehicle-status">status</p>
-                            <p class="vehicle-price">preco</p>
+                <div className="vehicle-list">
+                    <div className="vehicle-item">
+                        <div className="vehicle-details">
+                            <div className="vehicle-name">{codigopostal}</div>
+                            <p className="vehicle-status">status</p>
+                            <p className="vehicle-price">preco</p>
                         </div>
-                        <a href="descricao_carro.html" class="view-vehicle">Ver Veículo</a>
+                        <a href="descricao_carro.html" className="view-vehicle">Ver Veículo</a>
                     </div>
                 </div>
-                <div class="pagination">
-                    <button class="pagination-button" disabled>Anterior</button>
-                    <button class="pagination-button active">1</button>
-                    <a href="veiculos2.html"><button class="pagination-button">2</button></a>
-                    <a href="veiculos2.html"><button class="pagination-button">Próximo</button></a>
+                <div className="pagination">
+                    <button className="pagination-button" disabled>Anterior</button>
+                    <button className="pagination-button active">1</button>
+                    <a href="veiculos2.html"><button className="pagination-button">2</button></a>
+                    <a href="veiculos2.html"><button className="pagination-button">Próximo</button></a>
                 </div>
             </section>
-
         </div>
     );
-
 }
