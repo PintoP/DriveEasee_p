@@ -1,3 +1,44 @@
-body {
-    
+/* Header and Navigation */
+header, nav {
+    background: rgba(0, 37, 79, 0.9);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
 }
+
+    nav ul {
+        display: flex;
+        justify-content: space-between; /* Add space-between */
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        nav ul .left-menu,
+        nav ul .right-menu {
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+            nav ul li a {
+                color: #fff;
+                text-decoration: none;
+                padding: 10px 20px;
+                transition: background-color 0.3s ease;
+                display: block;
+            }
+
+                nav ul li a.active,
+                nav ul li a:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    border-radius: 5px;
+                }
+
+            nav ul li.account a {
+                font-size: 1em;
+                font-weight: bold;
+            }

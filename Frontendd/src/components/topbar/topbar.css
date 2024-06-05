@@ -17,7 +17,7 @@ body {
 }
 
 /* Header and Navigation */
-header, nav {
+.topbar {
     background: rgba(0, 37, 79, 0.9);
     padding: 10px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -25,24 +25,20 @@ header, nav {
     box-sizing: border-box;
 }
 
-    nav ul {
+    .topbar .menu {
         display: flex;
         justify-content: space-between; /* Add space-between */
+        align-items: center;
         list-style: none;
         padding: 0;
         margin: 0;
     }
 
-        nav ul .left-menu,
-        nav ul .right-menu {
-            display: flex;
-        }
-
-        nav ul li {
+        .topbar .menu li {
             margin: 0 15px;
         }
 
-            nav ul li a {
+            .topbar .menu li a {
                 color: #fff;
                 text-decoration: none;
                 padding: 10px 20px;
@@ -50,13 +46,13 @@ header, nav {
                 display: block;
             }
 
-                nav ul li a.active,
-                nav ul li a:hover {
+                .topbar .menu li a.active,
+                .topbar .menu li a:hover {
                     background-color: rgba(255, 255, 255, 0.2);
                     border-radius: 5px;
                 }
 
-            nav ul li.account a {
+            .topbar .menu li.account a {
                 font-size: 1em;
                 font-weight: bold;
             }
@@ -305,5 +301,3 @@ footer {
     background: rgba(0, 0, 0, 0.6);
     padding: 20px;
 }
-
-

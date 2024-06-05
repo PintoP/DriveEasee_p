@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 using DriveEasee.Data;
 using DriveEasee.Models;
 using DriveEasee.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace DriveEase.Controllers
 {
@@ -14,17 +19,17 @@ namespace DriveEase.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        private readonly DriveEaseContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly JwtService _jwtService;
-
-        public ClienteController(DriveEaseContext context, UserManager<IdentityUser> userManager, JwtService jwtService)
+        private readonly DriveEaseContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<ClienteController> _logger;
+        public ClienteController(UserManager<IdentityUser> userManager, IConfiguration configuration, DriveEaseContext context, ILogger<ClienteController> logger)
         {
-            _context = context;
             _userManager = userManager;
-            _jwtService = jwtService;
+            _configuration = configuration;
+            _context = context;
+            _logger = logger;
         }
-
         // GET: api/Cliente
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
@@ -147,35 +152,60 @@ namespace DriveEase.Controllers
 
         // POST: api/Cliente/BearerToken
         [HttpPost("BearerToken")]
-        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
+        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken([FromBody] AuthenticationRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Credenciais inválidas");
             }
 
-            var user = await _userManager.FindByNameAsync(request.UserName);
+            // Verifique se o cliente existe na tabela Clientes
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Email == request.Email);
+            if (cliente == null)
+            {
+                return BadRequest("Credenciais inválidas: cliente não encontrado");
+            }
 
+            // Verifique se o usuário existe no Identity
+            var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return BadRequest("Credenciais inválidas");
+                return BadRequest("Credenciais inválidas: usuário não encontrado");
             }
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
-
             if (!isPasswordValid)
             {
-                return BadRequest("Credenciais inválidas");
+                return BadRequest("Credenciais inválidas: senha incorreta");
             }
 
-            var token = _jwtService.CreateToken(user);
+            var token = GenerateJwtToken(user);
+            return Ok(new { Token = token });
+        }
+        private string GenerateJwtToken(IdentityUser user)
+        {
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
 
-            return Ok(token);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
 
         //introduz datas
         //confirma pagamento
-        
+
     }
 }

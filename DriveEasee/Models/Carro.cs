@@ -16,5 +16,7 @@ namespace DriveEasee.Models
         public int EstadoCarroIdEstadoCarro { get; set; }
         public int CategoriaCarroIdCategoriaCarro { get; set; }
         public int ModeloIdModelo { get; set; }
+
+        public decimal? preco { get; set; }
     }
 }

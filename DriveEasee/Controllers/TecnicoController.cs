@@ -137,7 +137,7 @@ namespace DriveEase.Controllers
                 return BadRequest("Credenciais inválidas");
             }
 
-            var user = await _userManager.FindByNameAsync(request.UserName);
+            var user = await _userManager.FindByEmailAsync(request.Email); // Use FindByEmailAsync para verificar o email
 
             if (user == null)
             {

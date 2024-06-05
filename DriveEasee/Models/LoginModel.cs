@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace DriveEasee.Models
 {
-    public class AuthenticationRequest
+    public class LoginModel
     {
-        [Required]
         public string Email { get; set; }
-
-        [Required]
         public string Password { get; set; }
     }
 }

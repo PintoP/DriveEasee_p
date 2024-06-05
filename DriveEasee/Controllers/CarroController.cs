@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DriveEase.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CarroController : ControllerBase
     {

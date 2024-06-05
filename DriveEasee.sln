@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "frontendd", "Frontendd\frontendd.esproj", "{72B005EE-5DA7-43C3-B655-5AE350DD00DA}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Frontendd", "Frontendd\Frontendd.esproj", "{72B005EE-5DA7-43C3-B655-5AE350DD00DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
