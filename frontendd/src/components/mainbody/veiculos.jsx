@@ -27,6 +27,7 @@ function VeiculoItem({ carro, onClick }) {
 
     return (
         <div className="car-item" onClick={() => onClick({ ...carro, modelo })}>
+            <img src={carro.imagemUrl} alt={`Imagem de ${modelo}`} className="car-image" />
             <h3>{modelo}</h3>
             <p>€{carro.preco}</p>
             <button>Alugar</button>

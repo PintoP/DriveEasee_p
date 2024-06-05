@@ -214,34 +214,3 @@ footer {
     z-index: 1000;
 }
 
-.modal-content {
-    background: #3498db; /* Cor azul para a caixa */
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    position: relative;
-}
-
-    .modal-content label {
-        display: block;
-        margin: 10px 0 5px;
-        color: white;
-    }
-
-    .modal-content input {
-        width: calc(100% - 20px);
-        padding: 5px;
-        margin-bottom: 10px;
-        border: none;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    color: white;
-}

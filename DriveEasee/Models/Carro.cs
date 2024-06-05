@@ -18,5 +18,6 @@ namespace DriveEasee.Models
         public int ModeloIdModelo { get; set; }
 
         public decimal? preco { get; set; }
+        public string ImagemUrl { get; set; }  
     }
 }

@@ -114,7 +114,7 @@ namespace DriveEase.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(new { message = "Erro ao criar o usuário.", errors = result.Errors });
             }
 
             cliente.Password = null;
